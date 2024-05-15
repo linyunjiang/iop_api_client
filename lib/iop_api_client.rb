@@ -5,7 +5,7 @@ require "iop_api_client/version"
 
 require 'rest-client'
 require 'json'
-require 'OpenSSL'
+require 'openssl'
 require 'cgi'
 require 'logger'
 require 'socket'
