@@ -26,7 +26,7 @@ Add this line to your application's Gemfile:
 
 
 ```ruby
-gem 'iop_api_client'
+gem 'iop_api_client', github: 'linyunjiang/iop_api_client'
 ```
 
 And then execute:
