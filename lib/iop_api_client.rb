@@ -46,7 +46,7 @@ module IopApiClient
             @serverUrl,@appkey,@appSecret = serverUrl,appkey,appSecret
         end
 
-        def execute(request,accessToken = nil)
+        def execute(request, accessToken = nil, from_top = false)
             
             sys_params = Hash.new
             sys_params[:app_key] = @appkey
@@ -74,10 +74,10 @@ module IopApiClient
                 sys_params[:method] = request.api_name
             # end
 
-            sys_params[:sign] = sign_api_request(sys_params,request.api_params)
+            sys_params[:sign] = sign_api_request(sys_params, request.api_params, from_top)
 
             rpcUrl = get_rest_url(@serverUrl,request.api_name)
-            fullUrl = get_full_url(rpcUrl,sys_params)
+            fullUrl = get_full_url(rpcUrl,sys_params, from_top)
 
             obj = nil
             begin
@@ -156,10 +156,10 @@ module IopApiClient
             return res
         end
 
-        def sign_api_request(sys_params,api_params)
+        def sign_api_request(sys_params,api_params, from_top = false)
             sort_arrays = nil
 
-            request_method = sys_params.delete(:method)
+            request_method = sys_params.delete(:method) unless from_top
 
             if api_params != nil
                 sort_arrays = sys_params.merge(api_params).sort_by do |k,v|  
@@ -177,7 +177,7 @@ module IopApiClient
                 sign_str += v.to_s()
             end
 
-            sign_str = request_method + sign_str
+            sign_str = request_method + sign_str unless from_top
 
             return OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), @appSecret, sign_str).upcase
         end
@@ -191,7 +191,7 @@ module IopApiClient
             return url + api_name;
         end
 
-        def get_full_url(url,params)
+        def get_full_url(url, params, from_top)
             
             full_url = url
             param_str = ''
@@ -205,7 +205,7 @@ module IopApiClient
                 param_str += v.to_s()
             end
 
-            full_url += '?'
+            full_url += from_top ? '&' : '?'
             full_url += param_str
 
             return full_url

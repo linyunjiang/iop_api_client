@@ -46,6 +46,8 @@ require 'iop_api_client'
 
 # init a REST Client
 client = IopApiClient::Client.new('https://api-sg.aliexpress.com/rest','***AppKey***','***SecretKey**')
+# init a REST Client for Top platform (https://open.aliexpress.com/doc/doc.htm?spm=a2o9m.11193535.0.0.71c859b2m1xOJV&nodeId=27493&docId=118729#/?docId=636)
+topClient = IopApiClient::Client.new('https://api-sg.aliexpress.com/rest','***AppKey***','***SecretKey**')
 
 # init a API Request for api : /xiaoxuan/mockfileupload
 request = IopApiClient::Request.new('/xiaoxuan/mockfileupload')
@@ -57,7 +59,10 @@ request.add_api_parameter("file_name","pom.xml")
 request.add_file_parameter("file_bytes","/Users/xt/Documents/work/tasp/tasp/pom.xml")
 
 # submit api request
-response = client.execute(request)
+response = client.execute(request, access_token)
+
+# Top platform api
+response = topClient.execute(request, access_token, true)
 
 puts response.success?
 
